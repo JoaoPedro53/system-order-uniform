@@ -20,7 +20,7 @@ public interface OrderMapper {
     @Mapping(target = "purchaseDate", expression = "java(java.time.LocalDate.now())")
     Order toOrder(OrderPostRequest orderPostRequest);
 
-    Order toOrder(OrderPutRequest orderPutRequest, LocalDate deliveryDate, LocalDate purchaseDate);
+    Order toOrder(OrderPutRequest orderPutRequest);
 
     List<OrderGetResponse> toListOrderGetResponse(List<Order> orders);
     OrderGetResponse toOrderGetResponse(Order order);

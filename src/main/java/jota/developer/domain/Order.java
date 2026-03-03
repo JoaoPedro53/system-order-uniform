@@ -31,7 +31,5 @@ public class Order {
     private String details;
     private StatusPayment statusPayment;
     private Double moneyGiven;
-    @Getter
-    private static List<Order> orders = new ArrayList<>();
 }
 
