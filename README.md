@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-O UOS está em desenvolvimento e tem como objetivo ser um sistema simples para registrar pedidos escolares de uniformes para uma empresa.
+O UOS está em desenvolvimento e tem como objetivo ser um sistema simples para gestão de encomendas de uniformes escolares.
 </p>
 
 <h3 align="center">Tecnologias</h3>
