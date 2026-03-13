@@ -21,5 +21,5 @@ MVC<br>DTO
 </p>
 
 Baixe a [imagem](https://hub.docker.com/repository/docker/joaopedro53/uos-system/general) da aplicação no Docker Hub -> Use a 0.0.2 <br>
-Após iniciar a API, a documentação dos endpoints pode ser acessada em: http://localhost:8080/swagger-ui.html
+Ao iniciar a API, consulte a documentação dos endpoints em: http://localhost:8080/swagger-ui.html
 
