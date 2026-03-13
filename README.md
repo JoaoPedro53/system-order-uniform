@@ -20,5 +20,5 @@ Java • Spring Boot • Docker
 MVC (Model-View-Controller)<br>DTO (Data Transfer Object)
 </p>
 
-Baixe a <a href="https://hub.docker.com/repository/docker/joaopedro53/uos-system/general" target="_blank" rel="noopener noreferrer">imagem</a> da aplicação
+Baixe a [imagem](https://hub.docker.com/repository/docker/joaopedro53/uos-system/general) da aplicação
 
