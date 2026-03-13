@@ -20,5 +20,6 @@ Java • Spring Boot • Docker
 MVC (Model-View-Controller)<br>DTO (Data Transfer Object)
 </p>
 
-Baixe a [imagem](https://hub.docker.com/repository/docker/joaopedro53/uos-system/general) da aplicação no Docker Hub
+Baixe a [imagem](https://hub.docker.com/repository/docker/joaopedro53/uos-system/general) da aplicação no Docker Hub -> Use a 0.0.2 <br>
+Veja as rotas via Swagger: http://localhost:8080/swagger-ui.html
 
