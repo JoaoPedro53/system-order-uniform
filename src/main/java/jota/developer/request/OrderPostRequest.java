@@ -16,7 +16,6 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 public class OrderPostRequest {
-    private Long orderId;
     private Client client;
     private UniformType uniformType;
     private UniformSizeUp uniformSizeUp;
