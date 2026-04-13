@@ -6,6 +6,7 @@ import jota.developer.domain.School;
 import jota.developer.enums.StatusPayment;
 import jota.developer.enums.UniformSizeUp;
 import jota.developer.enums.UniformType;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
@@ -13,7 +14,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-@Repository
+@Component
 public class OrderRepositoryData {
     private final List<Order> ORDERS = new ArrayList<>();
 

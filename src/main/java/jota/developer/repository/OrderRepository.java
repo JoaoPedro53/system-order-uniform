@@ -1,6 +1,7 @@
 package jota.developer.repository;
 
 import jota.developer.domain.Order;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
@@ -9,8 +10,9 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
+@RequiredArgsConstructor
 public class OrderRepository {
-    private OrderRepositoryData repositoryData;
+    private final OrderRepositoryData repositoryData;
 
     public List<Order> findAll() {
         return repositoryData.getORDERS();
