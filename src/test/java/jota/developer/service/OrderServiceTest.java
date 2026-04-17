@@ -33,7 +33,7 @@ class OrderServiceTest {
 
     @BeforeEach
     void init(){
-        var order1 = Order.builder().orderId(10L).moneyGiven(50.0).statusPayment(StatusPayment.PENDING_PAYMENT)
+        var order1 = Order.builder().orderId(1L).moneyGiven(50.0).statusPayment(StatusPayment.PENDING_PAYMENT)
                 .deliveryDate(LocalDate.of(2026, 03, 20)).purchaseDate(LocalDateTime.now())
                 .details("").quantity(1).school(new School("Livramento")).uniformType(UniformType.SHIRT)
                 .uniformSizeUp(UniformSizeUp.M).client(new Client("João", "82 99760-2347")).build();
@@ -41,7 +41,7 @@ class OrderServiceTest {
                 .deliveryDate(LocalDate.of(2026, 03, 20)).purchaseDate(LocalDateTime.now())
                 .details("").quantity(1).school(new School("Livramento")).uniformType(UniformType.SHIRT)
                 .uniformSizeUp(UniformSizeUp.M).client(new Client("João", "82 99760-2347")).build();
-        var order3 = Order.builder().orderId(9L).moneyGiven(50.0).statusPayment(StatusPayment.PENDING_PAYMENT)
+        var order3 = Order.builder().orderId(3L).moneyGiven(50.0).statusPayment(StatusPayment.PENDING_PAYMENT)
                 .deliveryDate(LocalDate.of(2026, 03, 20)).purchaseDate(LocalDateTime.now())
                 .details("").quantity(1).school(new School("Livramento")).uniformType(UniformType.SHIRT)
                 .uniformSizeUp(UniformSizeUp.M).client(new Client("João", "82 99760-2347")).build();
