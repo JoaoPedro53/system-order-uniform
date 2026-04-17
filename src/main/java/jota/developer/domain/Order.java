@@ -1,6 +1,5 @@
 package jota.developer.domain;
 
-import io.swagger.v3.oas.annotations.Hidden;
 import jota.developer.enums.StatusPayment;
 import jota.developer.enums.UniformSizeDown;
 import jota.developer.enums.UniformSizeUp;
