@@ -7,6 +7,7 @@ import jota.developer.enums.StatusPayment;
 import jota.developer.enums.UniformSizeUp;
 import jota.developer.enums.UniformType;
 import jota.developer.repository.OrderRepositoryData;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.*;
 import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -26,6 +28,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @WebMvcTest(controllers = OrderController.class)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -98,6 +101,25 @@ class OrderControllerTest {
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().json(response));
+    }
+
+    @Test
+    @DisplayName("GET v1/orders/1 return order with give id")
+    @org.junit.jupiter.api.Order(4)
+    void findById_ReturnOrderById_WhenSuccessful() throws Exception {
+        BDDMockito.when(repositoryData.getORDERS()).thenReturn(ordersList);
+
+        var response = readResourceFile("order/get-order-by-id-1-200.json");
+        mockMvc.perform(MockMvcRequestBuilders.get("/v1/orders/1"))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().json(response));
+    }
+
+    @Test
+    @DisplayName("GET v1/orders/100 throw ResponseStatusException when order is not found")
+    @org.junit.jupiter.api.Order(5)
+    void findById_ThrowResponseStatusException_WhenOrderIsNotFound() {
     }
 
     private String readResourceFile(String fileName) throws IOException {
