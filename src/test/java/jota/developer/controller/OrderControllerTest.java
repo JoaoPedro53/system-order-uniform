@@ -6,20 +6,22 @@ import jota.developer.domain.School;
 import jota.developer.enums.StatusPayment;
 import jota.developer.enums.UniformSizeUp;
 import jota.developer.enums.UniformType;
+import jota.developer.repository.OrderRepository;
 import jota.developer.repository.OrderRepositoryData;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.*;
+import org.mockito.ArgumentMatchers;
 import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.core.io.ResourceLoader;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -28,7 +30,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @WebMvcTest(controllers = OrderController.class)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -39,26 +40,26 @@ class OrderControllerTest {
     private MockMvc mockMvc;
     @MockitoBean
     private OrderRepositoryData repositoryData;
+    @MockitoSpyBean
+    private OrderRepository repository;
     private final List<Order> ordersList = new ArrayList<>();
     @Autowired
     private ResourceLoader resourceLoader;
 
     @BeforeEach
     void init() {
-        var dateTime = "2026-04-17T11:01:01.3905248";
-        var formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSSS");
-        var dateTimeFormated = LocalDateTime.parse(dateTime, formatter);
+        var dateTimePurchase = localDateTimePurchase();
 
         var order1 = Order.builder().orderId(1L).moneyGiven(50.0).statusPayment(StatusPayment.PENDING_PAYMENT)
-                .deliveryDate(LocalDate.of(2026, 03, 20)).purchaseDate(dateTimeFormated)
+                .deliveryDate(LocalDate.of(2026, 03, 20)).purchaseDate(dateTimePurchase)
                 .details("").quantity(1).school(new School("Livramento")).uniformType(UniformType.SHIRT)
                 .uniformSizeUp(UniformSizeUp.M).client(new Client("João", "82 99760-2347")).build();
         var order2 = Order.builder().orderId(2L).moneyGiven(50.0).statusPayment(StatusPayment.PENDING_PAYMENT)
-                .deliveryDate(LocalDate.of(2026, 03, 20)).purchaseDate(dateTimeFormated)
+                .deliveryDate(LocalDate.of(2026, 03, 20)).purchaseDate(dateTimePurchase)
                 .details("").quantity(1).school(new School("Livramento")).uniformType(UniformType.SHIRT)
                 .uniformSizeUp(UniformSizeUp.M).client(new Client("Pedro", "82 99760-2347")).build();
         var order3 = Order.builder().orderId(3L).moneyGiven(50.0).statusPayment(StatusPayment.PENDING_PAYMENT)
-                .deliveryDate(LocalDate.of(2026, 03, 20)).purchaseDate(dateTimeFormated)
+                .deliveryDate(LocalDate.of(2026, 03, 20)).purchaseDate(dateTimePurchase)
                 .details("").quantity(1).school(new School("Livramento")).uniformType(UniformType.SHIRT)
                 .uniformSizeUp(UniformSizeUp.M).client(new Client("Alfredo", "82 99760-2347")).build();
         ordersList.addAll(List.of(order1, order2, order3));
@@ -127,9 +128,40 @@ class OrderControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isNotFound());
     }
 
+    @Test
+    @DisplayName("POST v1/orders creates a order")
+    @org.junit.jupiter.api.Order(6)
+    void save_CreatesOrder_WhenSuccessful() throws Exception {
+        var request = readResourceFile("order/post-request-order-200.json");
+        var response = readResourceFile("order/post-response-order-201.json");
+        var dateTimePurchase = localDateTimePurchase();
+
+        var orderToSave = Order.builder().orderId(1L).moneyGiven(50.0).statusPayment(StatusPayment.PENDING_PAYMENT)
+                .deliveryDate(LocalDate.of(2026, 03, 20)).purchaseDate(dateTimePurchase)
+                .details("").quantity(1).school(new School("Livramento")).uniformType(UniformType.SHIRT)
+                .uniformSizeUp(UniformSizeUp.M).client(new Client("João", "82 99760-2347")).build();
+        BDDMockito.when(repository.save(ArgumentMatchers.any())).thenReturn(orderToSave);
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .post("/v1/orders")
+                        .content(request)
+                        .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isCreated())
+                .andExpect(MockMvcResultMatchers.content().json(response));
+    }
+
     private String readResourceFile(String fileName) throws IOException {
         var file = resourceLoader.getResource("classpath:%s".formatted(fileName)).getFile();
         return new String(Files.readAllBytes(file.toPath()));
+    }
+
+    private LocalDateTime localDateTimePurchase() {
+        var dateTime = "2026-04-17T11:01:01.3905248";
+        var formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSSS");
+        return LocalDateTime.parse(dateTime, formatter);
     }
 
 }
