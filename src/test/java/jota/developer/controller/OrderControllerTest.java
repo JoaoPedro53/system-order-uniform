@@ -117,9 +117,14 @@ class OrderControllerTest {
     }
 
     @Test
-    @DisplayName("GET v1/orders/100 throw ResponseStatusException when order is not found")
+    @DisplayName("GET v1/orders/100 throw ResponseStatusException 404 when order is not found")
     @org.junit.jupiter.api.Order(5)
-    void findById_ThrowResponseStatusException_WhenOrderIsNotFound() {
+    void findById_ThrowResponseStatusException_WhenOrderIsNotFound() throws Exception {
+        BDDMockito.when(repositoryData.getORDERS()).thenReturn(ordersList);
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/v1/orders/100"))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
     }
 
     private String readResourceFile(String fileName) throws IOException {
