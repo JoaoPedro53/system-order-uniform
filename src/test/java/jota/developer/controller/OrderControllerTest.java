@@ -107,7 +107,7 @@ class OrderControllerTest {
     }
 
     @Test
-    @DisplayName("GET v1/orders/1 return order with give id")
+    @DisplayName("GET v1/orders/'{id}' return order with give id")
     @org.junit.jupiter.api.Order(4)
     void findById_ReturnOrderById_WhenSuccessful() throws Exception {
         BDDMockito.when(repositoryData.getORDERS()).thenReturn(ordersList);
@@ -190,6 +190,29 @@ class OrderControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isNotFound())
                 .andExpect(MockMvcResultMatchers.status().reason("Order not Found"));
 
+    }
+
+    @Test
+    @DisplayName("DELETE v1/orders/'{id}' removes order")
+    @org.junit.jupiter.api.Order(9)
+    void delete_RemoveOrder_WhenSuccessful() throws Exception {
+        BDDMockito.when(repositoryData.getORDERS()).thenReturn(ordersList);
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/v1/orders/1"))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isNoContent());
+
+    }
+
+    @Test
+    @DisplayName("DELETE v1/orders/'{id}' throws ResponseStatusException when order is not found ")
+    @org.junit.jupiter.api.Order(10)
+    void delete_ThrowsResponseStatusException_WhenOrderIsNotFound() throws Exception {
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/v1/orders/999"))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isNotFound())
+                .andExpect(MockMvcResultMatchers.status().reason("Order not Found"));
     }
 
     private String readResourceFile(String fileName) throws IOException {
