@@ -8,6 +8,7 @@ import jota.developer.enums.UniformSizeUp;
 import jota.developer.enums.UniformType;
 import jota.developer.repository.OrderRepository;
 import jota.developer.repository.OrderRepositoryData;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.*;
 import org.mockito.ArgumentMatchers;
 import org.mockito.BDDMockito;
@@ -30,6 +31,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @WebMvcTest(controllers = OrderController.class)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -125,7 +127,9 @@ class OrderControllerTest {
 
         mockMvc.perform(MockMvcRequestBuilders.get("/v1/orders/100"))
                 .andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.status().isNotFound());
+                .andExpect(MockMvcResultMatchers.status().isNotFound())
+                .andExpect(MockMvcResultMatchers.status().reason("Order not Found"));
+
     }
 
     @Test
@@ -151,6 +155,41 @@ class OrderControllerTest {
                 .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isCreated())
                 .andExpect(MockMvcResultMatchers.content().json(response));
+    }
+
+    @Test
+    @DisplayName("PUT v1/orders updates a order")
+    @org.junit.jupiter.api.Order(7)
+    void update_updatedOrder_WhenSuccessful() throws Exception {
+        BDDMockito.when(repositoryData.getORDERS()).thenReturn(ordersList);
+        var request = readResourceFile("order/put-request-order-200.json");
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .put("/v1/orders")
+                        .content(request)
+                        .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isNoContent());
+    }
+
+    @Test
+    @DisplayName("PUT v1/orders throw ResponseStatusException when order is not found")
+    @org.junit.jupiter.api.Order(8)
+    void update_ThrowNotFound_WhenOrderIsNotFound() throws Exception {
+        BDDMockito.when(repositoryData.getORDERS()).thenReturn(ordersList);
+
+        var request = readResourceFile("order/put-request-order-404.json");
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .put("/v1/orders")
+                        .content(request)
+                        .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isNotFound())
+                .andExpect(MockMvcResultMatchers.status().reason("Order not Found"));
+
     }
 
     private String readResourceFile(String fileName) throws IOException {
