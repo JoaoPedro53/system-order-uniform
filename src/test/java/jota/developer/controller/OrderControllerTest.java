@@ -133,8 +133,34 @@ class OrderControllerTest {
     }
 
     @Test
-    @DisplayName("POST v1/orders creates a order")
+    @DisplayName("GET v1/orders/byDeliveryDate/'{date}' return order list with give date")
     @org.junit.jupiter.api.Order(6)
+    void searchByDeliveryDate_ReturnOrderListWithGiveDate_whenSuccessful() throws Exception{
+        BDDMockito.when(repositoryData.getORDERS()).thenReturn(ordersList);
+
+        var response = readResourceFile("order/get-order-by-delivery-date-200.json");
+        mockMvc.perform(MockMvcRequestBuilders.get("/v1/orders/byDeliveryDate/2026-03-20"))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().json(response));
+    }
+
+    @Test
+    @DisplayName("GET v1/orders/byDeliveryDate/'{date}' return empty order list when don't have orders for give date")
+    @org.junit.jupiter.api.Order(7)
+    void searchByDeliveryDate_ReturnEmptyOrderListWithGiveDate_whenSuccessful() throws Exception{
+        BDDMockito.when(repositoryData.getORDERS()).thenReturn(ordersList);
+
+        var response = readResourceFile("order/get-order-by-delivery-date-empty-list-orders-200.json");
+        mockMvc.perform(MockMvcRequestBuilders.get("/v1/orders/byDeliveryDate/2090-12-30"))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().json(response));
+    }
+
+    @Test
+    @DisplayName("POST v1/orders creates a order")
+    @org.junit.jupiter.api.Order(8)
     void save_CreatesOrder_WhenSuccessful() throws Exception {
         var request = readResourceFile("order/post-request-order-200.json");
         var response = readResourceFile("order/post-response-order-201.json");
@@ -159,7 +185,7 @@ class OrderControllerTest {
 
     @Test
     @DisplayName("PUT v1/orders updates a order")
-    @org.junit.jupiter.api.Order(7)
+    @org.junit.jupiter.api.Order(9)
     void update_updatedOrder_WhenSuccessful() throws Exception {
         BDDMockito.when(repositoryData.getORDERS()).thenReturn(ordersList);
         var request = readResourceFile("order/put-request-order-200.json");
@@ -175,7 +201,7 @@ class OrderControllerTest {
 
     @Test
     @DisplayName("PUT v1/orders throw ResponseStatusException when order is not found")
-    @org.junit.jupiter.api.Order(8)
+    @org.junit.jupiter.api.Order(10)
     void update_ThrowNotFound_WhenOrderIsNotFound() throws Exception {
         BDDMockito.when(repositoryData.getORDERS()).thenReturn(ordersList);
 
@@ -194,7 +220,7 @@ class OrderControllerTest {
 
     @Test
     @DisplayName("DELETE v1/orders/'{id}' removes order")
-    @org.junit.jupiter.api.Order(9)
+    @org.junit.jupiter.api.Order(11)
     void delete_RemoveOrder_WhenSuccessful() throws Exception {
         BDDMockito.when(repositoryData.getORDERS()).thenReturn(ordersList);
 
@@ -206,7 +232,7 @@ class OrderControllerTest {
 
     @Test
     @DisplayName("DELETE v1/orders/'{id}' throws ResponseStatusException when order is not found ")
-    @org.junit.jupiter.api.Order(10)
+    @org.junit.jupiter.api.Order(12)
     void delete_ThrowsResponseStatusException_WhenOrderIsNotFound() throws Exception {
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/v1/orders/999"))
