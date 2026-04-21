@@ -44,8 +44,8 @@ public class OrderController {
 
     }
 
-    @GetMapping("/searchByDate")
-    public ResponseEntity<List<OrderGetResponse>> searchByDate(@RequestParam LocalDate date){
+    @GetMapping("byDeliveryDate/{date}")
+    public ResponseEntity<List<OrderGetResponse>> searchByDate(@PathVariable LocalDate date){
         log.info("request received to list order by date: '{}'", date);
 
          var ordersByDate = service.searchByDate(date);
