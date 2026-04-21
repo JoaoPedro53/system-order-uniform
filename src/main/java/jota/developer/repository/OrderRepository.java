@@ -25,7 +25,7 @@ public class OrderRepository {
         return repositoryData.getORDERS().stream().filter(order -> order.getClient().getName().equalsIgnoreCase(name)).toList();
     }
 
-    public List<Order> searchByDate(LocalDate date) {
+    public List<Order> searchByDeliveryDate(LocalDate date) {
         return repositoryData.getORDERS().stream().filter(order -> order.getDeliveryDate().equals(date)).toList();
     }
 

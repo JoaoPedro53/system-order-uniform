@@ -168,25 +168,25 @@ class OrderServiceTest {
     }
 
     @Test
-    @DisplayName("searchByDate return order list with give date")
+    @DisplayName("searchByDeliveryDate return order list with give date")
     @org.junit.jupiter.api.Order(11)
-    void searchByDate_ReturnOrderListWithGiveDate_whenSuccessful(){
-        var orderByDateExpected = ordersList.getFirst();
-        BDDMockito.when(repository.searchByDate(orderByDateExpected.getDeliveryDate())).thenReturn(List.of(orderByDateExpected));
+    void searchByDeliveryDate_ReturnOrderListWithGiveDate_whenSuccessful(){
+        var orderByDeliveryDateExpected = ordersList.getFirst();
+        BDDMockito.when(repository.searchByDeliveryDate(orderByDeliveryDateExpected.getDeliveryDate())).thenReturn(List.of(orderByDeliveryDateExpected));
 
-        var ordersByDate = service.searchByDate(orderByDateExpected.getDeliveryDate());
-        Assertions.assertThat(ordersByDate).contains(orderByDateExpected);
+        var ordersByDate = service.searchByDeliveryDate(orderByDeliveryDateExpected.getDeliveryDate());
+        Assertions.assertThat(ordersByDate).contains(orderByDeliveryDateExpected);
 
     }
 
     @Test
-    @DisplayName("searchByDate return empty order list when don't have orders for give date")
+    @DisplayName("searchByDeliveryDate return empty order list when don't have orders for give date")
     @org.junit.jupiter.api.Order(12)
-    void searchByDate_ReturnEmptyOrderListWithGiveDate_whenSuccessful(){
-        var orderByDateExpected = ordersList.getFirst();
-        BDDMockito.when(repository.searchByDate(orderByDateExpected.getDeliveryDate())).thenReturn(List.of());
+    void searchByDeliveryDate_ReturnEmptyOrderListWithGiveDate_whenSuccessful(){
+        var orderByDeliveryDateExpected = ordersList.getFirst();
+        BDDMockito.when(repository.searchByDeliveryDate(orderByDeliveryDateExpected.getDeliveryDate())).thenReturn(List.of());
 
-        var ordersByDate = service.searchByDate(orderByDateExpected.getDeliveryDate());
+        var ordersByDate = service.searchByDeliveryDate(orderByDeliveryDateExpected.getDeliveryDate());
         Assertions.assertThat(ordersByDate).isEmpty();
 
     }

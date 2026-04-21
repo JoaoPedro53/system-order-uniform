@@ -48,9 +48,9 @@ public class OrderController {
     public ResponseEntity<List<OrderGetResponse>> searchByDeliveryDate(@PathVariable LocalDate date){
         log.info("request received to list order by date: '{}'", date);
 
-         var ordersByDate = service.searchByDate(date);
-         var ordersByDateGetResponse = mapper.toListOrderGetResponse(ordersByDate);
-        return ResponseEntity.ok(ordersByDateGetResponse);
+         var ordersByDeliveryDate = service.searchByDeliveryDate(date);
+         var ordersByDeliveryDateGetResponse = mapper.toListOrderGetResponse(ordersByDeliveryDate);
+        return ResponseEntity.ok(ordersByDeliveryDateGetResponse);
     }
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)

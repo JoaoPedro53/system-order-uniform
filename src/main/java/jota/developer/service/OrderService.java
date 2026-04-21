@@ -19,8 +19,8 @@ public class OrderService {
         return name == null ? repository.findAll() : repository.findByName(name);
     }
 
-    public List<Order> searchByDate(LocalDate date) {
-        return repository.searchByDate(date);
+    public List<Order> searchByDeliveryDate(LocalDate date) {
+        return repository.searchByDeliveryDate(date);
     }
 
     public Order findByIdOrThrowNotFound(Long id) {

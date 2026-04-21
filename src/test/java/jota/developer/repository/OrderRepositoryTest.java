@@ -77,15 +77,15 @@ class OrderRepositoryTest {
     }
 
     @Test
-    @DisplayName("searchByDate return order by delivery date when successful")
+    @DisplayName("searchByDeliveryDate return order by delivery date when successful")
     @org.junit.jupiter.api.Order(4)
-    void searchByDate_ReturnOrderByDeliveryDate_WhenSuccessful(){
+    void searchByDeliveryDate_ReturnOrdersByDeliveryDate_WhenSuccessful(){
         BDDMockito.when(repositoryData.getORDERS()).thenReturn(ordersList);
 
         var orderExpectedForDate = ordersList.getFirst();
-        var ordersByDate = repository.searchByDate(LocalDate.of(2026, 03, 20));
+        var ordersByDeliveryDate = repository.searchByDeliveryDate(LocalDate.of(2026, 03, 20));
 
-        Assertions.assertThat(ordersByDate).contains(orderExpectedForDate);
+        Assertions.assertThat(ordersByDeliveryDate).contains(orderExpectedForDate);
     }
 
     @Test
