@@ -1,5 +1,7 @@
 package jota.developer.repository;
 
+import jota.developer.commons.LocalDateTimePurchaseUtills;
+import jota.developer.commons.OrderUtills;
 import jota.developer.domain.Client;
 import jota.developer.domain.Order;
 import jota.developer.domain.School;
@@ -26,23 +28,15 @@ class OrderRepositoryTest {
     public OrderRepository repository;
     @Mock
     private OrderRepositoryData repositoryData;
-    private final List<Order> ordersList = new ArrayList<>();
+    private List<Order> ordersList;
+    @Mock
+    private LocalDateTimePurchaseUtills localDateTimePurchaseUtills;
+    @InjectMocks
+    private OrderUtills orderUtills;
 
     @BeforeEach
     void init(){
-        var order1 = Order.builder().orderId(1L).moneyGiven(50.0).statusPayment(StatusPayment.PENDING_PAYMENT)
-                .deliveryDate(LocalDate.of(2026, 03, 20)).purchaseDate(LocalDateTime.now())
-                .details("").quantity(1).school(new School("Livramento")).uniformType(UniformType.SHIRT)
-                .uniformSizeUp(UniformSizeUp.M).client(new Client("João", "82 99760-2347")).build();
-        var order2 = Order.builder().orderId(2L).moneyGiven(50.0).statusPayment(StatusPayment.PENDING_PAYMENT)
-                .deliveryDate(LocalDate.of(2026, 03, 20)).purchaseDate(LocalDateTime.now())
-                .details("").quantity(1).school(new School("Livramento")).uniformType(UniformType.SHIRT)
-                .uniformSizeUp(UniformSizeUp.M).client(new Client("Pedro", "82 99760-2347")).build();
-        var order3 = Order.builder().orderId(3L).moneyGiven(50.0).statusPayment(StatusPayment.PENDING_PAYMENT)
-                .deliveryDate(LocalDate.of(2026, 03, 20)).purchaseDate(LocalDateTime.now())
-                .details("").quantity(1).school(new School("Livramento")).uniformType(UniformType.SHIRT)
-                .uniformSizeUp(UniformSizeUp.M).client(new Client("Alfredo", "82 99760-2347")).build();
-        ordersList.addAll(List.of(order1, order2, order3));
+        ordersList = orderUtills.newListOrders();
     }
 
     @Test
@@ -94,12 +88,9 @@ class OrderRepositoryTest {
     void save_SavedOrder_WhenSuccessful(){
         BDDMockito.when(repositoryData.getORDERS()).thenReturn(ordersList);
 
-        var order = Order.builder().orderId(2L).moneyGiven(50.0).statusPayment(StatusPayment.PENDING_PAYMENT)
-                .deliveryDate(LocalDate.of(2026, 03, 20)).purchaseDate(LocalDateTime.now())
-                .details("").quantity(1).school(new School("Livramento")).uniformType(UniformType.SHIRT)
-                .uniformSizeUp(UniformSizeUp.M).client(new Client("João", "82 99760-2347")).build();
-        repository.save(order);
-        Assertions.assertThat(this.ordersList).contains(order);
+        var orderToSave = orderUtills.newOrderToSave();
+        repository.save(orderToSave);
+        Assertions.assertThat(this.ordersList).contains(orderToSave);
     }
 
     @Test
