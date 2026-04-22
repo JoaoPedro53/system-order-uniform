@@ -1,11 +1,8 @@
 package jota.developer.service;
 
-import jota.developer.domain.Client;
+import jota.developer.commons.LocalDateTimePurchaseUtills;
+import jota.developer.commons.OrderUtills;
 import jota.developer.domain.Order;
-import jota.developer.domain.School;
-import jota.developer.enums.StatusPayment;
-import jota.developer.enums.UniformSizeUp;
-import jota.developer.enums.UniformType;
 import jota.developer.repository.OrderRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.*;
@@ -16,9 +13,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,23 +23,15 @@ class OrderServiceTest {
     private OrderService service;
     @Mock
     private OrderRepository repository;
-    private final List<Order> ordersList = new ArrayList<>();
+    private List<Order> ordersList;
+    @Mock
+    private LocalDateTimePurchaseUtills localDateTimePurchaseUtills;
+    @InjectMocks
+    private OrderUtills orderUtills;
 
     @BeforeEach
     void init(){
-        var order1 = Order.builder().orderId(1L).moneyGiven(50.0).statusPayment(StatusPayment.PENDING_PAYMENT)
-                .deliveryDate(LocalDate.of(2026, 03, 20)).purchaseDate(LocalDateTime.now())
-                .details("").quantity(1).school(new School("Livramento")).uniformType(UniformType.SHIRT)
-                .uniformSizeUp(UniformSizeUp.M).client(new Client("João", "82 99760-2347")).build();
-        var order2 = Order.builder().orderId(2L).moneyGiven(50.0).statusPayment(StatusPayment.PENDING_PAYMENT)
-                .deliveryDate(LocalDate.of(2026, 03, 20)).purchaseDate(LocalDateTime.now())
-                .details("").quantity(1).school(new School("Livramento")).uniformType(UniformType.SHIRT)
-                .uniformSizeUp(UniformSizeUp.M).client(new Client("Pedro", "82 99760-2347")).build();
-        var order3 = Order.builder().orderId(3L).moneyGiven(50.0).statusPayment(StatusPayment.PENDING_PAYMENT)
-                .deliveryDate(LocalDate.of(2026, 03, 20)).purchaseDate(LocalDateTime.now())
-                .details("").quantity(1).school(new School("Livramento")).uniformType(UniformType.SHIRT)
-                .uniformSizeUp(UniformSizeUp.M).client(new Client("Alfredo", "82 99760-2347")).build();
-        ordersList.addAll(List.of(order1, order2, order3));
+        ordersList = orderUtills.newListOrders();
     }
 
     @Test
@@ -106,10 +92,7 @@ class OrderServiceTest {
     @DisplayName("save order is transfer correct for repository to be saved")
     @org.junit.jupiter.api.Order(6)
     void save_TransferOrderForRepositoryToBeSaved_WhenSuccessful() {
-        var order = Order.builder().orderId(9L).moneyGiven(50.0).statusPayment(StatusPayment.PENDING_PAYMENT)
-                .deliveryDate(LocalDate.of(2026, 03, 20)).purchaseDate(LocalDateTime.now())
-                .details("").quantity(1).school(new School("Livramento")).uniformType(UniformType.SHIRT)
-                .uniformSizeUp(UniformSizeUp.M).client(new Client("Junior", "82 99760-2347")).build();
+        var order = orderUtills.newOrderToSave();
 
         BDDMockito.when(repository.save(order)).thenReturn(order);
         var producerToSave = service.save(order);
