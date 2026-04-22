@@ -1,0 +1,20 @@
+spring:
+  application:
+    name: system-order-uniform
+
+  threads:
+    virtual:
+      enabled: true
+  web:
+    error:
+      include-stacktrace: on_param
+
+server:
+  servlet:
+    context-path: /
+
+database:
+  mysql:
+    url: localhost:3306
+    username: jota
+    password: jota
