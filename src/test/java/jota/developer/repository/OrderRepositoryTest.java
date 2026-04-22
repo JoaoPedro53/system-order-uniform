@@ -2,12 +2,8 @@ package jota.developer.repository;
 
 import jota.developer.commons.LocalDateTimePurchaseUtills;
 import jota.developer.commons.OrderUtills;
-import jota.developer.domain.Client;
 import jota.developer.domain.Order;
-import jota.developer.domain.School;
-import jota.developer.enums.StatusPayment;
 import jota.developer.enums.UniformSizeUp;
-import jota.developer.enums.UniformType;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,8 +13,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @ExtendWith(MockitoExtension.class)
