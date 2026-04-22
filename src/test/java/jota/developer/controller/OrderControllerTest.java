@@ -1,21 +1,16 @@
 package jota.developer.controller;
 
-import jota.developer.domain.Client;
+import jota.developer.commons.FileUtills;
+import jota.developer.commons.OrderUtills;
 import jota.developer.domain.Order;
-import jota.developer.domain.School;
-import jota.developer.enums.StatusPayment;
-import jota.developer.enums.UniformSizeUp;
-import jota.developer.enums.UniformType;
 import jota.developer.repository.OrderRepository;
 import jota.developer.repository.OrderRepositoryData;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.*;
 import org.mockito.ArgumentMatchers;
 import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
@@ -24,47 +19,30 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @WebMvcTest(controllers = OrderController.class)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @ComponentScan(basePackages = "jota.developer")
 //@Import({OrderMapperImpl.class, OrderService.class, OrderRepository.class, OrderRepositoryData.class})
 class OrderControllerTest {
+    private static final String URL = "/v1/orders";
+
     @Autowired
     private MockMvc mockMvc;
     @MockitoBean
     private OrderRepositoryData repositoryData;
     @MockitoSpyBean
     private OrderRepository repository;
-    private final List<Order> ordersList = new ArrayList<>();
+    private List<Order> ordersList;
     @Autowired
-    private ResourceLoader resourceLoader;
+    private FileUtills fileUtills;
+    @Autowired
+    private OrderUtills orderUtills;
 
     @BeforeEach
     void init() {
-        var dateTimePurchase = localDateTimePurchase();
-
-        var order1 = Order.builder().orderId(1L).moneyGiven(50.0).statusPayment(StatusPayment.PENDING_PAYMENT)
-                .deliveryDate(LocalDate.of(2026, 03, 20)).purchaseDate(dateTimePurchase)
-                .details("").quantity(1).school(new School("Livramento")).uniformType(UniformType.SHIRT)
-                .uniformSizeUp(UniformSizeUp.M).client(new Client("João", "82 99760-2347")).build();
-        var order2 = Order.builder().orderId(2L).moneyGiven(50.0).statusPayment(StatusPayment.PENDING_PAYMENT)
-                .deliveryDate(LocalDate.of(2026, 03, 20)).purchaseDate(dateTimePurchase)
-                .details("").quantity(1).school(new School("Livramento")).uniformType(UniformType.SHIRT)
-                .uniformSizeUp(UniformSizeUp.M).client(new Client("Pedro", "82 99760-2347")).build();
-        var order3 = Order.builder().orderId(3L).moneyGiven(50.0).statusPayment(StatusPayment.PENDING_PAYMENT)
-                .deliveryDate(LocalDate.of(2026, 03, 20)).purchaseDate(dateTimePurchase)
-                .details("").quantity(1).school(new School("Livramento")).uniformType(UniformType.SHIRT)
-                .uniformSizeUp(UniformSizeUp.M).client(new Client("Alfredo", "82 99760-2347")).build();
-        ordersList.addAll(List.of(order1, order2, order3));
+        ordersList = orderUtills.newListOrders();
     }
 
     @Test
@@ -73,8 +51,8 @@ class OrderControllerTest {
     void listAllOrdersOrOrdersByNameClient_ReturnAllOrders_WhenArgumentIsNull() throws Exception {
         BDDMockito.when(repositoryData.getORDERS()).thenReturn(ordersList);
 
-        var response = readResourceFile("order/get-order-null-name-200.json");
-        mockMvc.perform(MockMvcRequestBuilders.get("/v1/orders"))
+        var response = fileUtills.readResourceFile("order/get-order-null-name-200.json");
+        mockMvc.perform(MockMvcRequestBuilders.get(URL))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().json(response));
@@ -85,9 +63,10 @@ class OrderControllerTest {
     @org.junit.jupiter.api.Order(2)
     void listAllOrdersOrOrdersByNameClient_ReturnOrdersByNameClient_WhenArgumentNameIsGive() throws Exception {
         BDDMockito.when(repositoryData.getORDERS()).thenReturn(ordersList);
+        var nameClient = "João";
 
-        var response = readResourceFile("order/get-order-by-name-joao-200.json");
-        mockMvc.perform(MockMvcRequestBuilders.get("/v1/orders").param("name", "João"))
+        var response = fileUtills.readResourceFile("order/get-order-by-name-joao-200.json");
+        mockMvc.perform(MockMvcRequestBuilders.get(URL).param("name", nameClient))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().json(response));
@@ -98,9 +77,10 @@ class OrderControllerTest {
     @org.junit.jupiter.api.Order(3)
     void listAllOrdersOrOrdersByNameClient_ReturnOrdersEmptyList_WhenArgumentClientNameGiveIsNotFound() throws Exception {
         BDDMockito.when(repositoryData.getORDERS()).thenReturn(ordersList);
+        var nameClient = "x";
 
-        var response = readResourceFile("order/get-order-by-name-x-200.json");
-        mockMvc.perform(MockMvcRequestBuilders.get("/v1/orders").param("name", "x"))
+        var response = fileUtills.readResourceFile("order/get-order-by-name-x-200.json");
+        mockMvc.perform(MockMvcRequestBuilders.get(URL).param("name", nameClient))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().json(response));
@@ -111,21 +91,23 @@ class OrderControllerTest {
     @org.junit.jupiter.api.Order(4)
     void findById_ReturnOrderById_WhenSuccessful() throws Exception {
         BDDMockito.when(repositoryData.getORDERS()).thenReturn(ordersList);
+        var id = 1;
 
-        var response = readResourceFile("order/get-order-by-id-1-200.json");
-        mockMvc.perform(MockMvcRequestBuilders.get("/v1/orders/1"))
+        var response = fileUtills.readResourceFile("order/get-order-by-id-1-200.json");
+        mockMvc.perform(MockMvcRequestBuilders.get(URL + "/{id}", id))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().json(response));
     }
 
     @Test
-    @DisplayName("GET v1/orders/100 throw ResponseStatusException 404 when order is not found")
+    @DisplayName("GET v1/orders/'{id}' throw ResponseStatusException 404 when order is not found")
     @org.junit.jupiter.api.Order(5)
     void findById_ThrowResponseStatusException_WhenOrderIsNotFound() throws Exception {
         BDDMockito.when(repositoryData.getORDERS()).thenReturn(ordersList);
+        var id = 999;
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/v1/orders/100"))
+        mockMvc.perform(MockMvcRequestBuilders.get(URL + "/{id}", id))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isNotFound())
                 .andExpect(MockMvcResultMatchers.status().reason("Order not Found"));
@@ -135,11 +117,12 @@ class OrderControllerTest {
     @Test
     @DisplayName("GET v1/orders/byDeliveryDate/'{date}' return order list with give date")
     @org.junit.jupiter.api.Order(6)
-    void searchByDeliveryDate_ReturnOrderListWithGiveDate_whenSuccessful() throws Exception{
+    void searchByDeliveryDate_ReturnOrderListWithGiveDate_whenSuccessful() throws Exception {
         BDDMockito.when(repositoryData.getORDERS()).thenReturn(ordersList);
+        var date = "2026-03-20";
 
-        var response = readResourceFile("order/get-order-by-delivery-date-200.json");
-        mockMvc.perform(MockMvcRequestBuilders.get("/v1/orders/byDeliveryDate/2026-03-20"))
+        var response = fileUtills.readResourceFile("order/get-order-by-delivery-date-200.json");
+        mockMvc.perform(MockMvcRequestBuilders.get(URL + "/byDeliveryDate/{date}", date))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().json(response));
@@ -148,11 +131,12 @@ class OrderControllerTest {
     @Test
     @DisplayName("GET v1/orders/byDeliveryDate/'{date}' return empty order list when don't have orders for give date")
     @org.junit.jupiter.api.Order(7)
-    void searchByDeliveryDate_ReturnEmptyOrderListWithGiveDate_whenSuccessful() throws Exception{
+    void searchByDeliveryDate_ReturnEmptyOrderListWithGiveDate_whenSuccessful() throws Exception {
         BDDMockito.when(repositoryData.getORDERS()).thenReturn(ordersList);
+        var date = "2090-10-20";
 
-        var response = readResourceFile("order/get-order-by-delivery-date-empty-list-orders-200.json");
-        mockMvc.perform(MockMvcRequestBuilders.get("/v1/orders/byDeliveryDate/2090-12-30"))
+        var response = fileUtills.readResourceFile("order/get-order-by-delivery-date-empty-list-orders-200.json");
+        mockMvc.perform(MockMvcRequestBuilders.get(URL + "/byDeliveryDate/{date}", date))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().json(response));
@@ -162,18 +146,14 @@ class OrderControllerTest {
     @DisplayName("POST v1/orders creates a order")
     @org.junit.jupiter.api.Order(8)
     void save_CreatesOrder_WhenSuccessful() throws Exception {
-        var request = readResourceFile("order/post-request-order-200.json");
-        var response = readResourceFile("order/post-response-order-201.json");
-        var dateTimePurchase = localDateTimePurchase();
+        var request = fileUtills.readResourceFile("order/post-request-order-200.json");
+        var response = fileUtills.readResourceFile("order/post-response-order-201.json");
 
-        var orderToSave = Order.builder().orderId(1L).moneyGiven(50.0).statusPayment(StatusPayment.PENDING_PAYMENT)
-                .deliveryDate(LocalDate.of(2026, 03, 20)).purchaseDate(dateTimePurchase)
-                .details("").quantity(1).school(new School("Livramento")).uniformType(UniformType.SHIRT)
-                .uniformSizeUp(UniformSizeUp.M).client(new Client("João", "82 99760-2347")).build();
+        var orderToSave = orderUtills.newOrderToSave();
         BDDMockito.when(repository.save(ArgumentMatchers.any())).thenReturn(orderToSave);
 
         mockMvc.perform(MockMvcRequestBuilders
-                        .post("/v1/orders")
+                        .post(URL)
                         .content(request)
                         .contentType(MediaType.APPLICATION_JSON)
                 )
@@ -188,10 +168,10 @@ class OrderControllerTest {
     @org.junit.jupiter.api.Order(9)
     void update_updatedOrder_WhenSuccessful() throws Exception {
         BDDMockito.when(repositoryData.getORDERS()).thenReturn(ordersList);
-        var request = readResourceFile("order/put-request-order-200.json");
+        var request = fileUtills.readResourceFile("order/put-request-order-200.json");
 
         mockMvc.perform(MockMvcRequestBuilders
-                        .put("/v1/orders")
+                        .put(URL)
                         .content(request)
                         .contentType(MediaType.APPLICATION_JSON)
                 )
@@ -205,10 +185,10 @@ class OrderControllerTest {
     void update_ThrowNotFound_WhenOrderIsNotFound() throws Exception {
         BDDMockito.when(repositoryData.getORDERS()).thenReturn(ordersList);
 
-        var request = readResourceFile("order/put-request-order-404.json");
+        var request = fileUtills.readResourceFile("order/put-request-order-404.json");
 
         mockMvc.perform(MockMvcRequestBuilders
-                        .put("/v1/orders")
+                        .put(URL)
                         .content(request)
                         .contentType(MediaType.APPLICATION_JSON)
                 )
@@ -223,8 +203,9 @@ class OrderControllerTest {
     @org.junit.jupiter.api.Order(11)
     void delete_RemoveOrder_WhenSuccessful() throws Exception {
         BDDMockito.when(repositoryData.getORDERS()).thenReturn(ordersList);
+        var id = 1;
 
-        mockMvc.perform(MockMvcRequestBuilders.delete("/v1/orders/1"))
+        mockMvc.perform(MockMvcRequestBuilders.delete(URL + "/{id}", id))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isNoContent());
 
@@ -234,22 +215,12 @@ class OrderControllerTest {
     @DisplayName("DELETE v1/orders/'{id}' throws ResponseStatusException when order is not found ")
     @org.junit.jupiter.api.Order(12)
     void delete_ThrowsResponseStatusException_WhenOrderIsNotFound() throws Exception {
+        var id = 999;
 
-        mockMvc.perform(MockMvcRequestBuilders.delete("/v1/orders/999"))
+        mockMvc.perform(MockMvcRequestBuilders.delete(URL + "/{id}", id))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isNotFound())
                 .andExpect(MockMvcResultMatchers.status().reason("Order not Found"));
-    }
-
-    private String readResourceFile(String fileName) throws IOException {
-        var file = resourceLoader.getResource("classpath:%s".formatted(fileName)).getFile();
-        return new String(Files.readAllBytes(file.toPath()));
-    }
-
-    private LocalDateTime localDateTimePurchase() {
-        var dateTime = "2026-04-17T11:01:01.3905248";
-        var formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSSS");
-        return LocalDateTime.parse(dateTime, formatter);
     }
 
 }
