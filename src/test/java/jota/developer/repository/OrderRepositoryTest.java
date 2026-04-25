@@ -29,14 +29,14 @@ class OrderRepositoryTest {
     private OrderUtills orderUtills;
 
     @BeforeEach
-    void init(){
+    void init() {
         ordersList = orderUtills.newListOrders();
     }
 
     @Test
     @DisplayName("findAll return all orders when successful")
     @org.junit.jupiter.api.Order(1)
-    void findAll_ReturnAllOrders_WhenSuccessful(){
+    void findAll_ReturnAllOrders_WhenSuccessful() {
         BDDMockito.when(repositoryData.getORDERS()).thenReturn(ordersList);
 
         var orders = repository.findAll();
@@ -46,7 +46,7 @@ class OrderRepositoryTest {
     @Test
     @DisplayName("findByName return order by name when successful")
     @org.junit.jupiter.api.Order(2)
-    void findByName_ReturnOrderByName_WhenSuccessful(){
+    void findByName_ReturnOrderByName_WhenSuccessful() {
         BDDMockito.when(repositoryData.getORDERS()).thenReturn(ordersList);
 
         var orders = repository.findByName(null);
@@ -56,7 +56,7 @@ class OrderRepositoryTest {
     @Test
     @DisplayName("findById return order by id when successful")
     @org.junit.jupiter.api.Order(3)
-    void findById_ReturnOrderById_WhenSuccessful(){
+    void findById_ReturnOrderById_WhenSuccessful() {
         BDDMockito.when(repositoryData.getORDERS()).thenReturn(ordersList);
 
         var orderExpected = ordersList.getFirst();
@@ -67,7 +67,7 @@ class OrderRepositoryTest {
     @Test
     @DisplayName("searchByDeliveryDate return order by delivery date when successful")
     @org.junit.jupiter.api.Order(4)
-    void searchByDeliveryDate_ReturnOrdersByDeliveryDate_WhenSuccessful(){
+    void searchByDeliveryDate_ReturnOrdersByDeliveryDate_WhenSuccessful() {
         BDDMockito.when(repositoryData.getORDERS()).thenReturn(ordersList);
 
         var orderExpectedForDate = ordersList.getFirst();
@@ -79,7 +79,7 @@ class OrderRepositoryTest {
     @Test
     @DisplayName("save saved the order")
     @org.junit.jupiter.api.Order(5)
-    void save_SavedOrder_WhenSuccessful(){
+    void save_SavedOrder_WhenSuccessful() {
         BDDMockito.when(repositoryData.getORDERS()).thenReturn(ordersList);
 
         var orderToSave = orderUtills.newOrderToSave();
@@ -90,7 +90,7 @@ class OrderRepositoryTest {
     @Test
     @DisplayName("update updated the order")
     @org.junit.jupiter.api.Order(6)
-    void update_UpdatedOrder_WhenSuccessful(){
+    void update_UpdatedOrder_WhenSuccessful() {
         BDDMockito.when(repositoryData.getORDERS()).thenReturn(ordersList);
 
         var orderToUpdate = ordersList.getFirst();
@@ -109,7 +109,7 @@ class OrderRepositoryTest {
     @Test
     @DisplayName("delete remove the order")
     @org.junit.jupiter.api.Order(7)
-    void delete_DeletedOrder_WhenSuccessful(){
+    void delete_DeletedOrder_WhenSuccessful() {
         BDDMockito.when(repositoryData.getORDERS()).thenReturn(ordersList);
 
         var orderToDelete = ordersList.getFirst();

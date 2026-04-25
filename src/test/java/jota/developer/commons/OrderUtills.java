@@ -18,7 +18,7 @@ public class OrderUtills {
     @Autowired
     private LocalDateTimePurchaseUtills datePurchase;
 
-    public List<Order> newListOrders(){
+    public List<Order> newListOrders() {
         var order1 = Order.builder().orderId(1L).moneyGiven(50.0).statusPayment(StatusPayment.PENDING_PAYMENT)
                 .deliveryDate(LocalDate.of(2026, 03, 20)).purchaseDate(datePurchase.dateTimePurchase())
                 .details("").quantity(1).school(new School("Livramento")).uniformType(UniformType.SHIRT)

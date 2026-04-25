@@ -30,14 +30,14 @@ class OrderServiceTest {
     private OrderUtills orderUtills;
 
     @BeforeEach
-    void init(){
+    void init() {
         ordersList = orderUtills.newListOrders();
     }
 
     @Test
     @org.junit.jupiter.api.Order(1)
     @DisplayName("findAll return list with all orders when successful")
-    void findAll_ReturnListWithAllOrders_WhenSuccessful(){
+    void findAll_ReturnListWithAllOrders_WhenSuccessful() {
         BDDMockito.when(repository.findAll()).thenReturn(ordersList);
 
         var emptyOrderList = service.listAll(null);
@@ -47,7 +47,7 @@ class OrderServiceTest {
     @Test
     @org.junit.jupiter.api.Order(2)
     @DisplayName("findAll return list orders by give client name")
-    void findAll_ReturnListWithOrdersByGiveName_WhenSuccessful(){
+    void findAll_ReturnListWithOrdersByGiveName_WhenSuccessful() {
         var orderExpected = ordersList.getFirst();
         BDDMockito.when(repository.findByName(orderExpected.getClient().getName())).thenReturn(List.of(orderExpected));
 
@@ -58,7 +58,7 @@ class OrderServiceTest {
     @Test
     @org.junit.jupiter.api.Order(2)
     @DisplayName("findAll return empty list orders when client name give not found")
-    void findAll_ReturnEmptyListWhenClientNameGiveNotFound_WhenSuccessful(){
+    void findAll_ReturnEmptyListWhenClientNameGiveNotFound_WhenSuccessful() {
         BDDMockito.when(repository.findByName("x")).thenReturn(List.of());
 
         var emptyStudentsList = service.listAll("x");
@@ -153,7 +153,7 @@ class OrderServiceTest {
     @Test
     @DisplayName("searchByDeliveryDate return order list with give date")
     @org.junit.jupiter.api.Order(11)
-    void searchByDeliveryDate_ReturnOrderListWithGiveDate_whenSuccessful(){
+    void searchByDeliveryDate_ReturnOrderListWithGiveDate_whenSuccessful() {
         var orderByDeliveryDateExpected = ordersList.getFirst();
         BDDMockito.when(repository.searchByDeliveryDate(orderByDeliveryDateExpected.getDeliveryDate())).thenReturn(List.of(orderByDeliveryDateExpected));
 
@@ -165,7 +165,7 @@ class OrderServiceTest {
     @Test
     @DisplayName("searchByDeliveryDate return empty order list when don't have orders for give date")
     @org.junit.jupiter.api.Order(12)
-    void searchByDeliveryDate_ReturnEmptyOrderListWithGiveDate_whenSuccessful(){
+    void searchByDeliveryDate_ReturnEmptyOrderListWithGiveDate_whenSuccessful() {
         var orderByDeliveryDateExpected = ordersList.getFirst();
         BDDMockito.when(repository.searchByDeliveryDate(orderByDeliveryDateExpected.getDeliveryDate())).thenReturn(List.of());
 

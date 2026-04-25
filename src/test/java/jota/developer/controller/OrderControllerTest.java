@@ -23,7 +23,8 @@ import java.util.List;
 
 @WebMvcTest(controllers = OrderController.class)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-@ComponentScan(basePackages = "jota.developer")
+@ComponentScan(basePackages = {"jota.developer"})
+//@ActiveProfiles("test")
 //@Import({OrderMapperImpl.class, OrderService.class, OrderRepository.class, OrderRepositoryData.class})
 class OrderControllerTest {
     private static final String URL = "/v1/orders";
