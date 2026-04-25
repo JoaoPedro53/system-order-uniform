@@ -1,4 +1,4 @@
-package external.depedency;
+package jota.developer.config;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
