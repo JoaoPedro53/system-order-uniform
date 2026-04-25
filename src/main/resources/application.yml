@@ -12,3 +12,8 @@ spring:
 server:
   servlet:
     context-path: /
+
+database:
+    url: ${DB_URL:localhost}:${DB_PORT:3306}
+    username: ${LOCAL_USERNAME:pedro}
+    password: ${LOCAL_PASSWORD:pedro}
