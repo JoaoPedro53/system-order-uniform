@@ -25,7 +25,7 @@ public class OrderController {
     private final OrderService service;
 
     @GetMapping
-    public ResponseEntity<List<OrderGetResponse>> listAllOrdersOrOrdersByNameClient(@RequestParam(required = false) String name){
+    public ResponseEntity<List<OrderGetResponse>> listAllOrdersOrOrdersByNameClient(@RequestParam(required = false) String name) {
         log.info("request received to list all orders, param name: '{}'", name);
 
         var orders = service.listAll(name);
@@ -35,7 +35,7 @@ public class OrderController {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<OrderGetResponse> findById(@PathVariable Long id){
+    public ResponseEntity<OrderGetResponse> findById(@PathVariable Long id) {
         log.info("request received to list order by id: '{}'", id);
 
         var order = service.findByIdOrThrowNotFound(id);
@@ -45,11 +45,11 @@ public class OrderController {
     }
 
     @GetMapping("byDeliveryDate/{date}")
-    public ResponseEntity<List<OrderGetResponse>> searchByDeliveryDate(@PathVariable LocalDate date){
+    public ResponseEntity<List<OrderGetResponse>> searchByDeliveryDate(@PathVariable LocalDate date) {
         log.info("request received to list order by date: '{}'", date);
 
-         var ordersByDeliveryDate = service.searchByDeliveryDate(date);
-         var ordersByDeliveryDateGetResponse = mapper.toListOrderGetResponse(ordersByDeliveryDate);
+        var ordersByDeliveryDate = service.searchByDeliveryDate(date);
+        var ordersByDeliveryDateGetResponse = mapper.toListOrderGetResponse(ordersByDeliveryDate);
         return ResponseEntity.ok(ordersByDeliveryDateGetResponse);
     }
 
@@ -65,7 +65,7 @@ public class OrderController {
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<Void> deleteById(@PathVariable Long id){
+    public ResponseEntity<Void> deleteById(@PathVariable Long id) {
         log.info("request received to delete order: '{}'", id);
 
         service.delete(id);
@@ -73,7 +73,7 @@ public class OrderController {
     }
 
     @PutMapping
-    public ResponseEntity<Void> update(@RequestBody OrderPutRequest orderPutRequest){
+    public ResponseEntity<Void> update(@RequestBody OrderPutRequest orderPutRequest) {
         log.info("request received to update order: '{}'", orderPutRequest);
 
         var orderUpdate = mapper.toOrder(orderPutRequest);

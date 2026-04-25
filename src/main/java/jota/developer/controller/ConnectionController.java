@@ -1,6 +1,6 @@
 package jota.developer.controller;
 
-import external.depedency.Connection;
+import jota.developer.config.Connection;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +16,7 @@ public class ConnectionController {
     private final Connection connectionMySql;
 
     @GetMapping
-    public ResponseEntity<Connection> getConnection(){
+    public ResponseEntity<Connection> getConnection() {
         return ResponseEntity.ok(connectionMySql);
     }
 
